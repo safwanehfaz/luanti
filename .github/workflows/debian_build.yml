@@ -31,7 +31,7 @@ jobs:
           cd luanti
           cmake . -DRUN_IN_PLACE=TRUE
           make -j$(nproc)
-          ./bin/luanti
+          ./bin/luanti --run-unittests --enable-sound false
 
       # Step 3: Fix permissions so GitHub Runner can access root-owned files
       - name: Fix File Permissions
