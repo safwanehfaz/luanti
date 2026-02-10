@@ -12,14 +12,8 @@ jobs:
     permissions:
       contents: write
     steps:
-      # Step 1: Clear space to prevent "Disk Full" errors
-      - name: Free Disk Space
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: false
-          docker-images: true
         
-        # Step 2: Setup Caching to speed up future builds
+        # Step 1: Setup Caching to speed up future builds
       - name: Setup Cache
         uses: actions/cache@v4
         with:
@@ -28,7 +22,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-deb-ccache-
 
-      # Step 4: Build Lunati inside Docker container (Official Environment)
+      # Step 2: Build Lunati inside Docker container (Official Environment)
       - name: Build Lunati
         run: |
           sudo apt-get update
@@ -39,17 +33,17 @@ jobs:
           make -j$(nproc)
           ./bin/luanti
 
-      # Step 6: Fix permissions so GitHub Runner can access root-owned files
+      # Step 3: Fix permissions so GitHub Runner can access root-owned files
       - name: Fix File Permissions
         run: sudo chown -R $USER:$USER out/
       
-      # Step 8: Pack the files into a .deb archive
+      # Step 4: Pack the files into a .deb archive
       - name: Build .deb File
         run: |
           sudo apt-get install -y fakeroot
           fakeroot dpkg-deb --build --root-owner-group pkgroot lunati-latest.deb
 
-      # Step 9: Upload the final .deb file as an artifact
+      # Step 5: Upload the final .deb file as an artifact
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
