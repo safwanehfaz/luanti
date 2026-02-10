@@ -35,11 +35,8 @@ jobs:
           -DCMAKE_BUILD_TYPE=Release \
           -DRUN_IN_PLACE=TRUE
           make -j$(nproc)
-          ./bin/luanti --run-unittests --enable-sound false
-
-      # Step 3: Fix permissions so GitHub Runner can access root-owned files
-      - name: Fix File Permissions
-        run: sudo chown -R $USER:$USER out/
+          tree
+          ./bin/luanti --run-unittests
       
       # Step 4: Pack the files into a .deb archive
       - name: Build .deb File
