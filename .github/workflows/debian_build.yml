@@ -1,0 +1,57 @@
+name: Build Lunati Debian package
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-deb:
+    name: Build .deb for Debian
+    runs-on: ubuntu-latest # Using GitHub's free runner
+    container:
+      image: debian:latest
+    permissions:
+      contents: write
+    steps:
+      # Step 1: Clear space to prevent "Disk Full" errors
+      - name: Free Disk Space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: false
+          docker-images: true
+        
+        # Step 2: Setup Caching to speed up future builds
+      - name: Setup Cache
+        uses: actions/cache@v4
+        with:
+          path: .ccache
+          key: ${{ runner.os }}-deb-ccache-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-deb-ccache-
+
+      # Step 4: Build Lunati inside Docker container (Official Environment)
+      - name: Build Lunati
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git g++ make libc6-dev cmake libpng-dev libjpeg-dev libgl1-mesa-dev libsqlite3-dev libogg-dev libvorbis-dev libopenal-dev libcurl4-gnutls-dev libfreetype6-dev zlib1g-dev libgmp-dev libjsoncpp-dev libzstd-dev libluajit-5.1-dev gettext libsdl2-dev
+          git clone --depth 1 https://github.com/safwanehfaz/lunati.git
+          cd lunati
+          cmake . -DRUN_IN_PLACE=TRUE
+          make -j$(nproc)
+          ./bin/luanti
+
+      # Step 6: Fix permissions so GitHub Runner can access root-owned files
+      - name: Fix File Permissions
+        run: sudo chown -R $USER:$USER out/
+      
+      # Step 8: Pack the files into a .deb archive
+      - name: Build .deb File
+        run: |
+          sudo apt-get install -y fakeroot
+          fakeroot dpkg-deb --build --root-owner-group pkgroot lunati-latest.deb
+
+      # Step 9: Upload the final .deb file as an artifact
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lunati-deb
+          path: lunati-latest.deb
