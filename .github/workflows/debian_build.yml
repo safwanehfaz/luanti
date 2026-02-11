@@ -22,7 +22,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-deb-ccache-
 
-      # Step 2: Build Lunati inside Docker container (Official Environment)
+        # Step 2: Build Lunati inside Docker container (Official Environment)
       - name: Build Lunati
         run: |
           apt-get update
