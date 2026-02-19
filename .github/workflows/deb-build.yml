@@ -6,7 +6,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: debian-latest
+    container: 
+      image: debian:latest
     permissions:
       contents: write # to upload artifacts
     steps:
