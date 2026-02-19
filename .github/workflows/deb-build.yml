@@ -35,8 +35,16 @@ jobs:
       - name: Fix File Permissions
         run: chown -R $USER:$USER bin/
 
-      - name: Upload Debian package
+      - name: Build .deb File
+        run: |
+          sudo apt-get install -y zip
+          mkdir -p deb_package/
+          cp -r bin/* deb_package/
+          cd deb_package/
+          zip -r ../luanti-deb-package.zip ./*
+
+      - name: Upload zip
         uses: actions/upload-artifact@v4
         with:
           name: luanti-deb-package
-          path: deb/
+          path: ../luanti-deb-package.zip
