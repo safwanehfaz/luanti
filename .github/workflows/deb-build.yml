@@ -37,7 +37,7 @@ jobs:
 
       - name: Pack executable File
         run: |
-          sudo apt-get install -y zip
+          apt-get install -y zip
           mkdir -p deb_package/
           cp -r bin/* deb_package/
           cd deb_package/
