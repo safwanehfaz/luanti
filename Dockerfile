@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     libjsoncpp-dev libfreetype6-dev libopenal-dev \
     libvorbis-dev libogg-dev libglu1-mesa-dev libx11-dev \
     libxxf86vm-dev libxext-dev freeglut3-dev mesa-common-dev \
-    ca-certificates
+    ca-certificates libjpeg-dev
 
 RUN git clone --recursive https://github.com/jupp0r/prometheus-cpp && \
     cd prometheus-cpp && cmake -B build -DCMAKE_INSTALL_PREFIX=/usr -GNinja && \
@@ -29,9 +29,23 @@ FROM dev AS builder
 WORKDIR /usr/src/luanti
 
 COPY . .
+COPY .git /usr/src/luanti/.git
+COPY CMakeLists.txt /usr/src/luanti/CMakeLists.txt
+COPY README.md /usr/src/luanti/README.md
+COPY minetest.conf.example /usr/src/luanti/minetest.conf.example
+COPY builtin /usr/src/luanti/builtin
+COPY cmake /usr/src/luanti/cmake
+COPY doc /usr/src/luanti/doc
+COPY fonts /usr/src/luanti/fonts
+COPY lib /usr/src/luanti/lib
+COPY misc /usr/src/luanti/misc
+COPY po /usr/src/luanti/po
+COPY src /usr/src/luanti/src
+COPY irr /usr/src/luanti/irr
+COPY textures /usr/src/luanti/textures
 
 RUN cmake -B build \
-        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_INSTALL_PREFIX=/usr/local \
         -DCMAKE_BUILD_TYPE=Release \
         -DRUN_IN_PLACE=FALSE \
         -DBUILD_SERVER=TRUE \
