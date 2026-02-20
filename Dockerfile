@@ -11,9 +11,8 @@ RUN apt-get update && apt-get install -y \
     ca-certificates
 
 RUN apt-get update && apt-get install -y \
-    libglu1-mesa-dev freeglut3-dev mesa-common-dev \
-    libx11-dev libxxf86vm-dev libxext-dev \
-    libfreetype6-dev libopenal-dev libvorbis-dev
+    freeglut3-dev mesa-common-dev \
+    libxxf86vm-dev libxext-dev
 
 WORKDIR /usr/src/
 RUN git clone --recursive https://github.com/jupp0r/prometheus-cpp && \
