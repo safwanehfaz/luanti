@@ -55,12 +55,10 @@ RUN cmake -B build \
         -GNinja && \
     cmake --build build
 
-RUN chown -R root:root /usr/src/pkg-root && \
+RUN mkdir -p /usr/src/pkg-root && \
+    DESTDIR=/usr/src/pkg-root cmake --install build && \
+    chown -R root:root /usr/src/pkg-root && \
     chmod -R 755 /usr/src/pkg-root
-
-RUN mkdir -p /usr/src/pkg-root
-RUN DESTDIR=/usr/src/pkg-root cmake --install build --prefix /usr
-RUN ls -R /usr/src/pkg-root
 
 
 RUN mkdir -p /usr/src/pkg-root/DEBIAN
