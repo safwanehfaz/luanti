@@ -56,7 +56,7 @@ RUN cmake -B build \
     cmake --build build
 
 RUN mkdir -p /usr/src/pkg-root
-RUN cmake --install build --destdir /usr/src/pkg-root
+RUN cmake --install build --prefix /usr/src/pkg-root
 
 RUN mkdir -p /usr/src/pkg-root/DEBIAN
 RUN echo "Package: luanti-custom\n\
